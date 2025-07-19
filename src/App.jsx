@@ -9,7 +9,6 @@ import "./index.css";
 const App = () => {
   return (
     <div data-theme="forest">
-      <button className="btn btn-outline">Click Me</button>
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="/create" element={<CreatePage />}></Route>
