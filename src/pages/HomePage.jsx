@@ -16,7 +16,7 @@ const HomePage = () => {
     const fetchNotes = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${baseURL}/api/notes`);
+        const res = await axios.get(`${baseURL}/notes`);
         setNotes(res.data);
         setIsRateLimited(false); 
         console.log(res.data);
