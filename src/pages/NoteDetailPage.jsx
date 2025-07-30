@@ -28,7 +28,37 @@ const NoteDetailPage = () => {
     fetchNote();
   }, [id]);
 
-  const handleDelete = async () => {};
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete thsi note?")) return;
+    try {
+      await axios.delete(`${import.meta.env.VITE_API}/notes/${id}`);
+      toast.success("Note deleted successfully");
+      naviagate("/");
+    } catch (error) {
+      console.log("Error deleting note:", error);
+      toast.error("Failed to delete note");
+    }
+  };
+  const handleSave = async () => {
+    if (!note.title.trim() || !note.description.trim()) {
+      toast.error("Please all fields are required");
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      await axios.put(`${import.meta.env.VITE_API}/notes/${id}`, note);
+      toast.success("Note updated successfully");
+      naviagate("/");
+    } catch (error) {
+      console.log("Error updating note:", error);
+      toast.error("Failed to update note");
+      
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -40,7 +70,6 @@ const NoteDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -55,6 +84,46 @@ const NoteDetailPage = () => {
               <Trash2Icon className="h-5 w-5" />
               Delete Note
             </button>
+          </div>
+
+          <div className="card bg-base-100 ">
+            <div className="card-body ">
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Title</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Note title"
+                  className="input input-bordered"
+                  value={note.title}
+                  onChange={(e) => setNote({ ...note, title: e.target.value })}
+                />
+              </div>
+              <div className="form-control mb-4">
+                <label className="label">
+                  <span className="label-text">Description</span>
+                </label>
+                <textarea
+                  placeholder="Write a brief description"
+                  className="textarea textarea-bordered h-32"
+                  value={note.description}
+                  onChange={(e) =>
+                    setNote({ ...note, description: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="card-actions justify-end">
+                <button
+                  className="btn btn-primary"
+                  disabled={saving}
+                  onClick={handleSave}
+                >
+                  {saving ? "saving..." : "Save Changes"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
